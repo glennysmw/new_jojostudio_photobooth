@@ -4,11 +4,16 @@
 
 const TOTAL_PHOTOS = 4;
 const COUNTDOWN_SECONDS = 5;
+const PHOTO_PAUSE_MS = 2500; // breathing room between photos
+const CHEESE_HOLD_MS = 700; // how long "Cheese!" stays on screen after capture
+const CHEESE_TO_SHUTTER_MS = 250; // pause between "Cheese!" appearing and shutter firing
+const RING_CIRCUMFERENCE = 289; // 2π * r where r=46
 
 // DOM
 const video = document.getElementById("video");
 const countdownCircle = document.getElementById("countdown-circle");
 const countdownEl = document.getElementById("countdown");
+const ringProgress = document.querySelector(".ring-progress");
 const statusBanner = document.getElementById("status-banner");
 const shutterFlash = document.getElementById("shutter-flash");
 const dots = document.querySelectorAll(".progress-dots .dot");
@@ -16,9 +21,13 @@ const startGate = document.getElementById("start-gate");
 const startCard = document.getElementById("start-card");
 const tapToStartBtn = document.getElementById("tap-to-start-btn");
 
-// Audio
+// Audio (preloaded for tighter sync)
 const shutterSound = new Audio("shutter.mp3");
 const countdownSound = new Audio("countdown.mp3");
+[shutterSound, countdownSound].forEach((a) => {
+    a.preload = "auto";
+    a.load();
+});
 
 // State
 const capturedPhotos = [];
@@ -43,12 +52,19 @@ const videoConstraints = {
     audio: false
 };
 
-// Status messages — friendly, encouraging, photo-specific
+// Status messages — updated each photo
 const STATUS_MESSAGES = [
     "Photo 1 of 4 — strike a pose!",
     "Photo 2 of 4 — looking good!",
     "Photo 3 of 4 — keep it going!",
     "Last one — make it count ✨"
+];
+
+// Friendly between-shot messages while the user resets their pose
+const BETWEEN_MESSAGES = [
+    "Nice! Switch it up for photo 2 ✨",
+    "Love it! Pose 3 coming up ✨",
+    "One more — bring it home ✨"
 ];
 
 // ------------------------------------------------------------
@@ -74,17 +90,35 @@ function updateDots() {
     });
 }
 
-function showCountdown(value) {
+function showCountdown(value, isCheese = false) {
     countdownEl.textContent = value;
-    // Re-trigger the tick animation by toggling the class
-    countdownEl.classList.remove("tick");
-    void countdownEl.offsetWidth; // force reflow
-    countdownEl.classList.add("tick");
+    countdownEl.classList.remove("tick", "cheese");
+    void countdownEl.offsetWidth; // force reflow so the animation re-triggers
+    countdownEl.classList.add(isCheese ? "cheese" : "tick");
     countdownCircle.classList.add("visible");
 }
 
 function hideCountdown() {
     countdownCircle.classList.remove("visible");
+}
+
+// Smooth continuous drain of the SVG ring over the given number of seconds.
+function startRingDrain(seconds) {
+    if (!ringProgress) return;
+    // Reset to full instantly
+    ringProgress.style.transition = "none";
+    ringProgress.style.strokeDashoffset = "0";
+    // Force reflow so the reset takes effect before we start the animation
+    ringProgress.getBoundingClientRect();
+    // Drain to empty over `seconds`
+    ringProgress.style.transition = `stroke-dashoffset ${seconds}s linear`;
+    ringProgress.style.strokeDashoffset = String(RING_CIRCUMFERENCE);
+}
+
+function resetRing() {
+    if (!ringProgress) return;
+    ringProgress.style.transition = "none";
+    ringProgress.style.strokeDashoffset = "0";
 }
 
 function triggerShutter() {
@@ -109,25 +143,24 @@ function capturePhotoWithCountdown() {
 
     let timeLeft = COUNTDOWN_SECONDS;
     showCountdown(timeLeft);
+    startRingDrain(COUNTDOWN_SECONDS);
     playSound(countdownSound);
 
     const interval = setInterval(() => {
         timeLeft--;
 
         if (timeLeft >= 1) {
+            // 4, 3, 2, 1 — beep + visual snap
             showCountdown(timeLeft);
             playSound(countdownSound);
-        }
-
-        if (timeLeft === 1) {
-            // Trigger shutter visual + sound at the moment of capture
-            setTimeout(() => triggerShutter(), 300);
-        }
-
-        if (timeLeft <= 0) {
+        } else {
+            // timeLeft hit 0 — say "Cheese!" then capture
             clearInterval(interval);
-            hideCountdown();
-            capturePhoto();
+            showCountdown("Cheese!", true);
+            setTimeout(() => {
+                triggerShutter();
+                capturePhoto();
+            }, CHEESE_TO_SHUTTER_MS);
         }
     }, 1000);
 }
@@ -147,22 +180,36 @@ function capturePhoto() {
     capturedCount++;
     updateDots();
 
-    // Brief pause between photos
-    setTimeout(capturePhotoWithCountdown, 1100);
+    const isLast = capturedCount >= TOTAL_PHOTOS;
+
+    // After "Cheese!" sits for a moment, hide it and update status
+    setTimeout(() => {
+        hideCountdown();
+        resetRing();
+        if (isLast) {
+            setStatus("All done! ✨ Saving your strip...");
+        } else {
+            setStatus(BETWEEN_MESSAGES[capturedCount - 1]);
+        }
+    }, CHEESE_HOLD_MS);
+
+    // Continue: either finish or start next countdown after the pause
+    if (isLast) {
+        setTimeout(finishSession, 1800);
+    } else {
+        setTimeout(capturePhotoWithCountdown, PHOTO_PAUSE_MS);
+    }
 }
 
 function finishSession() {
-    setStatus("All done! ✨ Saving your strip...");
     sessionStorage.setItem("capturedPhotos", JSON.stringify(capturedPhotos));
-
-    // Smooth fade-out before redirect
     setTimeout(() => {
         if (typeof redirectWithTransition === "function") {
             redirectWithTransition("download.html");
         } else {
             window.location.href = "download.html";
         }
-    }, 700);
+    }, 400);
 }
 
 // ------------------------------------------------------------
@@ -194,7 +241,6 @@ async function startSession() {
         const stream = await navigator.mediaDevices.getUserMedia(videoConstraints);
         video.srcObject = stream;
 
-        // Wait for the video to actually be ready before starting
         await new Promise((resolve) => {
             if (video.readyState >= 2) {
                 resolve();
@@ -227,7 +273,6 @@ function showCameraError(err) {
         <button class="primary-btn" id="retry-btn">Try again</button>
     `;
     document.getElementById("retry-btn").addEventListener("click", () => {
-        // Reset the card and rebind
         startCard.innerHTML = `
             <p class="eyebrow">JOJO.STUDIO</p>
             <h2>Ready when you are 💕</h2>

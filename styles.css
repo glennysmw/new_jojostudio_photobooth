@@ -457,6 +457,7 @@ button {
     }
 }
 
+/* Countdown circle with draining ring */
 #countdown-circle {
     position: absolute;
     top: 50%;
@@ -482,29 +483,75 @@ button {
     opacity: 1;
 }
 
+.countdown-ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    pointer-events: none;
+}
+
+.ring-bg,
+.ring-progress {
+    fill: none;
+    stroke-width: 3;
+}
+
+.ring-bg {
+    stroke: rgba(45, 45, 68, 0.08);
+}
+
+.ring-progress {
+    stroke: var(--primary);
+    stroke-linecap: round;
+    stroke-dasharray: 289;
+    stroke-dashoffset: 0;
+}
+
 #countdown {
     font-family: 'Ruslan Display', serif;
     font-size: clamp(56px, 9vw, 84px);
     color: var(--primary);
     line-height: 1;
+    z-index: 1;
+    transition: color var(--t-fast) var(--ease);
 }
 
 #countdown.tick {
-    animation: tickAnim 800ms var(--ease) forwards;
+    animation: tickPop 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes tickAnim {
+@keyframes tickPop {
     0% {
-        transform: scale(1.5);
-        opacity: 0;
-    }
-
-    30% {
-        opacity: 1;
+        transform: scale(1.18);
     }
 
     100% {
         transform: scale(1);
+    }
+}
+
+#countdown.cheese {
+    font-size: clamp(34px, 5.5vw, 52px);
+    color: var(--accent-deep);
+    animation: cheesePop 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    letter-spacing: 0.02em;
+}
+
+@keyframes cheesePop {
+    0% {
+        transform: scale(0.6) rotate(-8deg);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.12) rotate(3deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1) rotate(0);
         opacity: 1;
     }
 }
@@ -524,6 +571,7 @@ button {
     box-shadow: var(--shadow-sm);
     z-index: 3;
     white-space: nowrap;
+    transition: opacity var(--t-med) var(--ease);
 }
 
 .progress-dots {
@@ -841,7 +889,6 @@ button {
     .video-wrapper {
         border-width: 10px;
         aspect-ratio: 3 / 4;
-        /* matches the portrait stream captured on mobile */
         max-width: 420px;
     }
 
@@ -916,5 +963,9 @@ button {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+
+    .ring-progress {
+        transition: none !important;
     }
 }
