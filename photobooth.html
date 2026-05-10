@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smile! · JOJO.STUDIO</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Koulen&family=Kreon:wght@300..700&family=League+Spartan:wght@100..900&family=Archivo+Black&family=Ruslan+Display&family=Silkscreen:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="img2/pin_logo.png">
+</head>
+
+<body class="photobooth">
+    <h1 class="logo2">JOJO.STUDIO</h1>
+
+    <main class="photobooth-content">
+        <div class="camera-stage">
+            <div class="video-wrapper">
+                <video id="video" autoplay playsinline muted></video>
+                <div id="shutter-flash"></div>
+                <div id="status-banner">Get ready to pose ✨</div>
+                <div id="countdown-circle">
+                    <span id="countdown">5</span>
+                </div>
+            </div>
+
+            <div class="progress-dots" id="progress-dots" aria-label="Photo progress">
+                <span class="dot" data-index="0"></span>
+                <span class="dot" data-index="1"></span>
+                <span class="dot" data-index="2"></span>
+                <span class="dot" data-index="3"></span>
+            </div>
+        </div>
+
+        <button class="secondary-btn back-btn" onclick="redirectWithTransition('instructions.html')">← Back</button>
+    </main>
+
+    <!-- Tap-to-start gate (primes audio + camera permissions inside a real click handler) -->
+    <div id="start-gate" class="start-gate">
+        <div class="start-card" id="start-card">
+            <p class="eyebrow">JOJO.STUDIO</p>
+            <h2>Ready when you are 💕</h2>
+            <p class="subtle">
+                4 photos · 5-second countdown each.<br>
+                Tap below to give the camera and audio permission.
+            </p>
+            <button class="primary-btn" id="tap-to-start-btn">
+                Start shooting <span class="arrow">→</span>
+            </button>
+        </div>
+    </div>
+
+    <footer class="footer-text">
+        Made with lots of love · © 2025 by Glenn
+    </footer>
+
+    <script src="transition.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

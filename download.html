@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your strip · JOJO.STUDIO</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Koulen&family=Kreon:wght@300..700&family=League+Spartan:wght@100..900&family=Archivo+Black&family=Ruslan+Display&family=Silkscreen:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="img2/pin_logo.png">
+</head>
+
+<body class="download">
+    <h1 class="logo2">JOJO.STUDIO</h1>
+
+    <main class="download-content">
+        <div class="strip-stage">
+            <div class="strip-frame">
+                <canvas id="finalCanvas"></canvas>
+            </div>
+        </div>
+
+        <aside class="customizer">
+            <h2 class="customizer-title">Pick your frame</h2>
+            <p class="customizer-sub">Tap a swatch to preview it on your strip.</p>
+
+            <div class="color-grid">
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/nude.jpg" style="background-image: url('img/nude.jpg');"
+                        aria-label="Nude"></button>
+                    <span class="color-label">Nude</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/lilac.jpg" style="background-image: url('img/lilac.jpg');"
+                        aria-label="Lilac"></button>
+                    <span class="color-label">Lilac</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/blue.jpg" style="background-image: url('img/blue.jpg');"
+                        aria-label="Blue"></button>
+                    <span class="color-label">Blue</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/red.jpg" style="background-image: url('img/red.jpg');"
+                        aria-label="Red"></button>
+                    <span class="color-label">Red</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/cobalt.jpg"
+                        style="background-image: url('img/cobalt.jpg');" aria-label="Cobalt"></button>
+                    <span class="color-label">Cobalt</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/matcha.jpg"
+                        style="background-image: url('img/matcha.jpg');" aria-label="Matcha"></button>
+                    <span class="color-label">Matcha</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/valentines.png"
+                        style="background-image: url('img/valentines.png');" aria-label="LOVE"></button>
+                    <span class="color-label">LOVE</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/valentines1.png"
+                        style="background-image: url('img/valentines1.png');" aria-label="Hearts"></button>
+                    <span class="color-label">Hearts</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/valentines2.png"
+                        style="background-image: url('img/valentines2.png');" aria-label="Cherry"></button>
+                    <span class="color-label">Cherry</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/Sky.png" style="background-image: url('img/Sky.png');"
+                        aria-label="BlueSky"></button>
+                    <span class="color-label">BlueSky</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/Riff.png" style="background-image: url('img/Riff.png');"
+                        aria-label="Coral Riffs"></button>
+                    <span class="color-label">Coral Riffs</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/Water.png" style="background-image: url('img/Water.png');"
+                        aria-label="Water"></button>
+                    <span class="color-label">Water</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/SkyHigh.png"
+                        style="background-image: url('img/SkyHigh.png');" aria-label="SkyHigh"></button>
+                    <span class="color-label">SkyHigh</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/Lanterns.png"
+                        style="background-image: url('img/Lanterns.png');" aria-label="Lanterns"></button>
+                    <span class="color-label">Lanterns</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/Film.png" style="background-image: url('img/Film.png');"
+                        aria-label="Films"></button>
+                    <span class="color-label">Films</span>
+                </div>
+                <div class="color-cell">
+                    <button class="color-btn" data-color="img/Passport_Stamps.png"
+                        style="background-image: url('img/Passport_Stamps.png');" aria-label="Passport Stamps"></button>
+                    <span class="color-label">Passport</span>
+                </div>
+            </div>
+
+            <div class="customizer-actions">
+                <button class="secondary-btn" onclick="redirectWithTransition('photobooth.html')">↻ Retake</button>
+                <button class="primary-btn" id="download-btn">↓ Download</button>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="footer-text">
+        Made with lots of love · © 2025 by Glenn
+    </footer>
+
+    <script src="transition.js"></script>
+    <script src="download.js"></script>
+</body>
+
+</html>
